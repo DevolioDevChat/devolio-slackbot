@@ -7,3 +7,8 @@ This bot serves as a host to welcome new users who enter the general channel.
 - Welcomes new users
 - Provides instructions on where to go next
 - To be continued..
+
+## Instructions to get running
+- This uses python >=3.5
+- Depends on `slacker` and `websockets` (`pip3 install slacker websockets`)
+- API key must be set in environment variable called SLACKAPIKEY

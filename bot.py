@@ -1,9 +1,18 @@
+import os
+
 import asyncio
 
 from slacker import Slacker
 import websockets
 
+################################
+# IMPORTANT: just for testing! #
+################################
 slack = Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
+# Use this for production:
+#
+#     slack = Slacker(os.environ["SLACKAPIKEY"])
+#
 
 
 async def read_loop(uri):

@@ -6,4 +6,4 @@ This bot serves as a host to welcome new users who enter the general channel.
 - Provides instructions on where to go next
 - To be continued..
 
-<img src = "https://raw.githubusercontent.com/DevolioDevChat/devolio-slackbot/master/assets/img/bot_logo.png" alt="Image of the bot" style="width: 128px; height: 128px;"/>
+<img src = "https://raw.githubusercontent.com/DevolioDevChat/devolio-slackbot/master/assets/img/bot_logo.png" alt="Image of the bot" height="128px" width="128px"/>

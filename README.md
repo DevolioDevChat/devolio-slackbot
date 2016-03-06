@@ -1,3 +1,5 @@
+
+<img src = "https://raw.githubusercontent.com/DevolioDevChat/devolio-slackbot/master/assets/img/bot_logo.png" alt="Image of the bot" height="128px" width="128px"/>
 # Devolio welcomeBot
 This bot serves as a host to welcome new users who enter the general channel.
 
@@ -5,5 +7,3 @@ This bot serves as a host to welcome new users who enter the general channel.
 - Welcomes new users
 - Provides instructions on where to go next
 - To be continued..
-
-<img src = "https://raw.githubusercontent.com/DevolioDevChat/devolio-slackbot/master/assets/img/bot_logo.png" alt="Image of the bot" height="128px" width="128px"/>

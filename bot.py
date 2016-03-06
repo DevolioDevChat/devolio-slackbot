@@ -1,10 +1,35 @@
+import asyncio
+
 from slacker import Slacker
-import time
+import websockets
 
 slack = Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
 
-rtm = slack.rtm.start()
-print(rtm)
+
+async def read_loop(uri):
+    ws = await websockets.connect(uri)
+    while True:
+        json_data = await ws.recv()
+        print(json_data)
+
+
+def get_rtm_uri():
+    rtm = slack.rtm.start()
+    print(rtm)
+
+    body = rtm.body
+    if body.get('ok'):
+        return body.get('url')
+    else:
+        # TODO: handle errors
+        return None
+
+if __name__ == '__main__':
+    ws_url = get_rtm_uri()
+
+    asyncio.get_event_loop().run_until_complete(
+        read_loop(ws_url)
+    )
 
 # Send a message to #general channel
 # slack.chat.post_message('#general', 'Hello fellow slackers!')

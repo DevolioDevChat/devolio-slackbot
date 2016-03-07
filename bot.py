@@ -48,19 +48,20 @@ def get_rtm_uri():
     rtm = slack.rtm.start()
     print(rtm)
 
-    body = rtm.body
-    if body.get('ok'):
-        return body.get('url')
-    else:
-        # TODO: handle errors
+    try:
+        body = rtm.body
+    except slacker.Error as e:
+        print(e)
         return None
+    return body.get('url')
 
 if __name__ == '__main__':
     ws_url = get_rtm_uri()
 
-    asyncio.get_event_loop().run_until_complete(
-        read_loop(ws_url)
-    )
+    if ws_url is not None:
+        asyncio.get_event_loop().run_until_complete(
+            read_loop(ws_url)
+        )
 
 # Send a message to #general channel
 # slack.chat.post_message('#general', 'Hello fellow slackers!')

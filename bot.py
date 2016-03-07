@@ -4,17 +4,28 @@ import json
 import asyncio
 import websockets
 
-from slacker import Slacker
+import slacker
 
 
 ################################
 # IMPORTANT: just for testing! #
 ################################
-slack = Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
+slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
 # Use this for production:
 #
 #     slack = Slacker(os.environ["SLACKAPIKEY"])
 #
+
+
+def open_im_channel(user):
+    try:
+        response = slack.im.open(user)
+    except slacker.Error as e:
+        print(e)
+        return None
+
+    # https://api.slack.com/methods/im.open
+    return response.body.get('channel', {}).get('id')
 
 
 async def read_loop(uri):
@@ -23,6 +34,14 @@ async def read_loop(uri):
         json_data = await ws.recv()
         data = json.loads(json_data)
         print(data)
+
+        if data.get('type') == 'team_join':
+            user_id = data.get('user', {}).get('id')
+
+            im_channel_id = open_im_channel(user_id)
+            if im_channel_id is not None:
+                # TODO: send message
+                pass
 
 
 def get_rtm_uri():

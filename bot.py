@@ -36,7 +36,7 @@ async def read_loop(uri):
         print(data)
 
         if data.get('type') == 'team_join':
-            user_id = data.get('user')
+            user_id = data.get('user').get('id')
 
             im_channel_id = open_im_channel(user_id)
             if im_channel_id is not None:

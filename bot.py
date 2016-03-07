@@ -1,4 +1,5 @@
 import os
+import json
 
 import asyncio
 import websockets
@@ -20,7 +21,8 @@ async def read_loop(uri):
     ws = await websockets.connect(uri)
     while True:
         json_data = await ws.recv()
-        print(json_data)
+        data = json.loads(json_data)
+        print(data)
 
 
 def get_rtm_uri():

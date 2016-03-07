@@ -43,11 +43,11 @@ async def read_loop(uri):
             if im_channel_id is not None:
                 slack.chat.post_message(user_id, "Test message, sent when you message")
                 slack.chat.post_message(user_id, "Hey " + user_name + ", welcome to the Devolio Slack group!")
-                slack.chat.post_message(user_id, "We'd love to hear a little about you - feel free to drop" 
-                                        + "in on #intro and let everyone know what you're about.")
-                slack.chat.post_message(user_id, "You can add your interests to your profile by clicking on your name, "
-                                        + "and then you can join different channels for your various interests "
-                                        + "by clicking on that \"Channels\" link up near the top left.")
+                slack.chat.post_message(user_id, "We'd love to hear a little about you - feel free to drop" \
+                                        "in on #intro and let everyone know what you're about.")
+                slack.chat.post_message(user_id, "You can add your interests to your profile by clicking on your name, " \
+                                        "and then you can join different channels for your various interests " \
+                                        "by clicking on that \"Channels\" link up near the top left.")
 
 
 def get_rtm_uri():

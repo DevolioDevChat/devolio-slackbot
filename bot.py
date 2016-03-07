@@ -1,9 +1,10 @@
 import os
 
 import asyncio
+import websockets
 
 from slacker import Slacker
-import websockets
+
 
 ################################
 # IMPORTANT: just for testing! #

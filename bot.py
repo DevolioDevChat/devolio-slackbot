@@ -10,7 +10,7 @@ import slacker
 ################################
 # IMPORTANT: just for testing! #
 ################################
-slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
+slack = slacker.Slacker('xoxp-25238534758-25237037223-25238098151-66ad8ae5db')
 # Use this for production:
 #
 #     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
@@ -42,14 +42,15 @@ async def read_loop(uri):
         #if a user joins the devolio team
         if data.get('type') == 'team_join':
             if im_channel_id is not None:
-                send_introduction_message()
+                send_introduction_message(user_id, user_name)
                 slack.channels.join("intro")
+        #if a user changes his preferences
         if data.get('type') == "pref_change":
             if im_channel_id is not None:
                 slack.chat.post_message(user_id, "I see you changed your preferences, that's great!")
                 slack.chat.post_message(user_id, "I will now put you in some channels that I think might be relevant to you.")
                 slack.chat.post_message(user_id, "Feel free to join other channels as well!")
-
+                scan_relevant_channels()
 
 def get_rtm_uri():
     rtm = slack.rtm.start()
@@ -62,7 +63,9 @@ def get_rtm_uri():
         return None
     return body.get('url')
 
-def send_introduction_message():
+def scan_relevant_channels(user_id):
+    print("Hi")
+def send_introduction_message(user_id, user_name):
     slack.chat.post_message(user_id, "Test message, sent when you message")
     slack.chat.post_message(user_id, "Hey " + user_name + ", welcome to the Devolio Slack group!")
     slack.chat.post_message(user_id, "We'd love to hear a little about you - feel free to drop" \

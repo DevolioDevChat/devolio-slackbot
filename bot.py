@@ -43,7 +43,8 @@ async def read_loop(uri):
         if data.get('type') == 'team_join':
             if im_channel_id is not None:
                 send_introduction_message(user_id, user_name)
-                slack.channels.join("intro")
+                #We sadly cant force the
+                #slack.channels.join("intro")
         #if a user changes his preferences
         if data.get('type') == "pref_change":
             if im_channel_id is not None:

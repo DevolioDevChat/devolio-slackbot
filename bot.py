@@ -16,6 +16,11 @@ slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
 #     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
 #
 
+channels = json.loads(slack.channels.list())
+
+for channel in channels.get('channels', {}):
+    slack.channels.join(channel.get['id'])
+
 
 def open_im_channel(user):
     try:

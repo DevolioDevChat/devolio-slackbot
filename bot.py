@@ -47,15 +47,17 @@ async def read_loop(uri):
                 #We sadly cant force the
                 #slack.channels.join("intro")
         #if a user changes his preferences
-        if data.get('type') == "pref_change":
+        if data.get('type') == "user_change":
             user_id = data.get('user').get('id')
             user_name = data.get('user').get('name')
             im_channel_id = open_im_channel(user_id)
+            title = data.get('user').get('profile').get('title')
+            print(title)
             if im_channel_id is not None:
                 slack.chat.post_message(user_id, "I see you changed your preferences, that's great!")
                 slack.chat.post_message(user_id, "I will now put you in some channels that I think might be relevant to you.")
                 slack.chat.post_message(user_id, "Feel free to join other channels as well!")
-                scan_relevant_channels()
+                scan_relevant_channels(user_id)
 
 def get_rtm_uri():
     rtm = slack.rtm.start()

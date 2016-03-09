@@ -100,13 +100,11 @@ def scan_relevant_channels(user_id, user_title):
     user_title = re.split(r"[^\w\s]", user_title)
     print(user_title)
     for channel_name in channel_names:
-        if channel_name in user_title:
-            if is_user_in_group(user_id, channel_name) == False:
-                chat_message(["Hi, I noticed you like " + channel_name + ". You should join #" + channel_name + "!"], user_id, 0)
+        if channel_name in user_title and is_user_in_group(user_id, channel_name) == False:
+            chat_message(["Hi, I noticed you like " + channel_name + ". You should join #" + channel_name + "!"], user_id, 0)
     for title in user_title:
-        if title in shortcuts:
-            if is_user_in_group(user_id, shortcuts[title]) == False:
-                chat_message(["Hi, I noticed you like " + shortcuts[title] + ". You should join #" + shortcuts[title] + "!"], user_id, 0)
+        if title in shortcuts and is_user_in_group(user_id, shortcuts[title]) == False:
+            chat_message(["Hi, I noticed you like " + shortcuts[title] + ". You should join #" + shortcuts[title] + "!"], user_id, 0)
 def is_user_in_group(user_id, group_name):
     user_groups = slack.channels.list().body['channels']
     user_list = []

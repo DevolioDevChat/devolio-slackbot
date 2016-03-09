@@ -56,13 +56,12 @@ async def read_loop(uri):
             user_id = data.get('user').get('id')
             user_name = data.get('user').get('name')
             im_channel_id = open_im_channel(user_id)
-            title = data.get('user').get('profile').get('title')
-            print(title)
+            user_title = data.get('user').get('profile').get('title')
             if im_channel_id is not None:
                 slack.chat.post_message(user_id, "I see you changed your preferences, that's great!")
                 slack.chat.post_message(user_id, "I will now put you in some channels that I think might be relevant to you.")
                 slack.chat.post_message(user_id, "Feel free to join other channels as well!")
-                scan_relevant_channels(user_id)
+                scan_relevant_channels(user_id, user_title)
 
 def get_rtm_uri():
     rtm = slack.rtm.start()
@@ -75,8 +74,9 @@ def get_rtm_uri():
         return None
     return body.get('url')
 
-def scan_relevant_channels(user_id):
-    print("Hi")
+def scan_relevant_channels(user_id, user_title):
+    if "python" in user_title:
+        print("python in title!")
 def send_introduction_message(user_id, user_name):
     slack.chat.post_message(user_id, "Test message, sent when you message")
     slack.chat.post_message(user_id, "Hey " + user_name + ", welcome to the Devolio Slack group!")

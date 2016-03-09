@@ -90,7 +90,7 @@ def get_rtm_uri():
         print(e)
         return None
     return body.get('url')
-
+#test
 def scan_relevant_channels(user_id, user_title):
     channel_names = get_channel_names()
     user_title = user_title.lower()

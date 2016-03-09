@@ -17,8 +17,6 @@ slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
 #     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
 #
 
-
-
 def open_im_channel(user):
     try:
         response = slack.im.open(user)

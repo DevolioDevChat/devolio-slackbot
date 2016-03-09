@@ -10,7 +10,7 @@ import slacker
 ################################
 # IMPORTANT: just for testing! #
 ################################
-slack = slacker.Slacker('xoxp-25238534758-25237037223-25238098151-66ad8ae5db')
+slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
 # Use this for production:
 #
 #     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])

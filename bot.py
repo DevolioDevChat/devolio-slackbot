@@ -90,19 +90,25 @@ def get_rtm_uri():
         print(e)
         return None
     return body.get('url')
-#test
+
 def scan_relevant_channels(user_id, user_title):
+    shortcuts = {'web' : 'webdev', 'ror' : 'ruby', 'c++' : 'cplusplus',
+    'css' : 'frontend'}
     channel_names = get_channel_names()
     user_title = user_title.lower()
     user_title = user_title.split(' ')
+
     for channel_name in channel_names:
-        print(user_title)
         if channel_name in user_title:
             if is_user_in_group(user_id, channel_name) == False:
-                chat_message(["You should join #" + channel_name + ", you're not yet in it!"], user_id, 0)
-
+                chat_message(["Hi, I noticed you like " + channel_name + ". You should join #" + channel_name + "!"], user_id, 0)
+    for title in user_title:
+        if title in shortcuts:
+            if is_user_in_group(user_id, shortcuts[title]) == False:
+                chat_message(["Hi, I noticed you like " + shortcuts[title] + ". You should join #" + shortcuts[title] + "!"], user_id, 0)
 def is_user_in_group(user_id, group_name):
     user_groups = slack.channels.list().body['channels']
+    user_list = []
     for group in user_groups:
         if group['name'] == group_name:
             user_list = group['members']

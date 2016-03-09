@@ -1,4 +1,5 @@
 import os
+import time
 import json
 
 import asyncio
@@ -16,10 +17,6 @@ slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
 #     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
 #
 
-channels = json.loads(slack.channels.list())
-
-for channel in channels.get('channels', {}):
-    slack.channels.join(channel.get['id'])
 
 
 def open_im_channel(user):
@@ -50,7 +47,13 @@ async def read_loop(uri):
             im_channel_id = open_im_channel(user_id)
             # Send intro message
             if im_channel_id is not None:
-                send_introduction_message(user_id, user_name)
+                sentences = ["Hey " + user_name + ", welcome to the Devolio Slack group!",
+                "We'd love to hear a little about you - feel free to drop" \
+                                            "in on <#intro> and let everyone know what you're about.",
+                                            "You can add your interests to your profile by clicking on your name, " \
+                                            "and then join channels for your various interests " \
+                                            "by clicking on that \"Channels\" link up near the top left."]
+                chat_message(sentences, user_id, 3)
 
         # If a user changes their preferences
         if data.get('type') == "user_change":
@@ -60,11 +63,24 @@ async def read_loop(uri):
             # Make sure im channel is open
             im_channel_id = open_im_channel(user_id)
             user_title = data.get('user').get('profile').get('title')
+
             if im_channel_id is not None:
-                slack.chat.post_message(user_id, "I see you changed your preferences, that's great!")
-                slack.chat.post_message(user_id, "I will now put you in some channels that I think might be relevant to you.")
-                slack.chat.post_message(user_id, "Feel free to join other channels as well!")
+                sentences = ["I see you changed your preferences, that's great!",
+                "I will now put you in some channels that I think might be relevant to you.",
+                "Feel free to join other channels as well!"]
+                chat_message(sentences, user_id, 3)
                 scan_relevant_channels(user_id, user_title)
+
+        if data.get('type') == "message":
+            user_message = data.get('text')
+            channel_id = data.get('channel')
+            if user_message == "hi":
+                chat_message(["Beep boop, I'm a Welcome Bot!"], channel_id, 0)
+
+def chat_message(sentences, location_id, delay_time):
+    for sentence in sentences:
+        slack.chat.post_message(location_id, sentence)
+        time.sleep(delay_time)
 
 def get_rtm_uri():
     rtm = slack.rtm.start()
@@ -80,15 +96,6 @@ def get_rtm_uri():
 def scan_relevant_channels(user_id, user_title):
     if "python" in user_title:
         print("python in title!")
-def send_introduction_message(user_id, user_name):
-    slack.chat.post_message(user_id, "Hey " + user_name + ", welcome to the Devolio Slack group!")
-    time.sleep(1)
-    slack.chat.post_message(user_id, "We'd love to hear a little about you - feel free to drop" \
-                                            "in on <#intro> and let everyone know what you're about.")
-    time.sleep(1)
-    slack.chat.post_message(user_id, "You can add your interests to your profile by clicking on your name, " \
-                                            "and then join channels for your various interests " \
-                                            "by clicking on that \"Channels\" link up near the top left.")
 
 # Check if this is the main application running (not imported)
 if __name__ == '__main__':

@@ -36,17 +36,21 @@ async def read_loop(uri):
         data = json.loads(json_data)
         print(data)
 
-        user_id = data.get('user').get('id')
-        user_name = data.get('user').get('name')
-        im_channel_id = open_im_channel(user_id)
+    
         #if a user joins the devolio team
         if data.get('type') == 'team_join':
+            user_id = data.get('user').get('id')
+            user_name = data.get('user').get('name')
+            im_channel_id = open_im_channel(user_id)
             if im_channel_id is not None:
                 send_introduction_message(user_id, user_name)
                 #We sadly cant force the
                 #slack.channels.join("intro")
         #if a user changes his preferences
         if data.get('type') == "pref_change":
+            user_id = data.get('user').get('id')
+            user_name = data.get('user').get('name')
+            im_channel_id = open_im_channel(user_id)
             if im_channel_id is not None:
                 slack.chat.post_message(user_id, "I see you changed your preferences, that's great!")
                 slack.chat.post_message(user_id, "I will now put you in some channels that I think might be relevant to you.")

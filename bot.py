@@ -92,12 +92,15 @@ def get_rtm_uri():
     return body.get('url')
 
 def scan_relevant_channels(user_id, user_title):
-    if "python" in user_title.lower() and is_user_in_group(user_id, 'python') == False:
-        chat_message(["You should join <#python>, you're not yet in it!"], user_id, 0)
-    if "java" in user_title.lower() and is_user_in_group(user_id, 'java') == False:
-        chat_message(["You should join <#java>, you're not yet in it!"], user_id, 0) 
-    if "javascript" in user_title.lower() and is_user_in_group(user_id, 'javascript') == False:
-        chat_message(["You should join <#javascript>, you're not yet in it!"], user_id, 0)
+    channel_names = get_channel_names()
+    user_title = user_title.lower()
+    user_title = user_title.split(' ')
+    for channel_name in channel_names:
+        print(user_title)
+        if channel_name in user_title:
+            if is_user_in_group(user_id, channel_name) == False:
+                chat_message(["You should join #" + channel_name + ", you're not yet in it!"], user_id, 0)
+
 def is_user_in_group(user_id, group_name):
     user_groups = slack.channels.list().body['channels']
     for group in user_groups:
@@ -106,6 +109,13 @@ def is_user_in_group(user_id, group_name):
     if user_id not in user_list:
         return False
     return True
+
+def get_channel_names():
+    user_groups = slack.channels.list().body['channels']
+    channel_names = []
+    for group in user_groups:
+        channel_names.append(group['name'])
+    return channel_names
 
 # Check if this is the main application running (not imported)
 if __name__ == '__main__':

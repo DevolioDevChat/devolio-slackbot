@@ -64,10 +64,6 @@ async def read_loop(uri):
             user_title = data.get('user').get('profile').get('title')
 
             if im_channel_id is not None:
-                sentences = ["I see you changed your preferences, that's great!",
-                "I will now put you in some channels that I think might be relevant to you.",
-                "Feel free to join other channels as well!"]
-                #chat_message(sentences, user_id, 3)
                 scan_relevant_channels(user_id, user_title)
 
         if data.get('type') == "message":

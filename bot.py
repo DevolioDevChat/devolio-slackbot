@@ -93,7 +93,7 @@ def scan_relevant_channels(user_id, user_title):
     'css' : 'frontend'}
     channel_names = get_channel_names()
     user_title = user_title.lower()
-    user_title = re.split(r"[^\w\s]", user_title)
+    user_title = re.split(r"[.;&/|\s]", user_title)
     print(user_title)
     for channel_name in channel_names:
         if channel_name in user_title and is_user_in_group(user_id, channel_name) == False:

@@ -36,25 +36,28 @@ def open_im_channel(user):
 async def read_loop(uri):
     ws = await websockets.connect(uri)
     while True:
-        #wait for the data from slack to come in.
+        # Wait for the data from slack to come in
         json_data = await ws.recv()
         data = json.loads(json_data)
         print(data)
 
-    
-        #if a user joins the devolio team
+        # If a user joins the devolio team
         if data.get('type') == 'team_join':
+            # Get their user id and name
             user_id = data.get('user').get('id')
             user_name = data.get('user').get('name')
+            # Open im channel with user
             im_channel_id = open_im_channel(user_id)
+            # Send intro message
             if im_channel_id is not None:
                 send_introduction_message(user_id, user_name)
-                #We sadly cant force the
-                #slack.channels.join("intro")
-        #if a user changes his preferences
+
+        # If a user changes their preferences
         if data.get('type') == "user_change":
+            # Get their user id and name
             user_id = data.get('user').get('id')
             user_name = data.get('user').get('name')
+            # Make sure im channel is open
             im_channel_id = open_im_channel(user_id)
             user_title = data.get('user').get('profile').get('title')
             if im_channel_id is not None:
@@ -78,14 +81,16 @@ def scan_relevant_channels(user_id, user_title):
     if "python" in user_title:
         print("python in title!")
 def send_introduction_message(user_id, user_name):
-    slack.chat.post_message(user_id, "Test message, sent when you message")
     slack.chat.post_message(user_id, "Hey " + user_name + ", welcome to the Devolio Slack group!")
+    time.sleep(1)
     slack.chat.post_message(user_id, "We'd love to hear a little about you - feel free to drop" \
                                             "in on <#intro> and let everyone know what you're about.")
+    time.sleep(1)
     slack.chat.post_message(user_id, "You can add your interests to your profile by clicking on your name, " \
-                                            "and then you can join different channels for your various interests " \
+                                            "and then join channels for your various interests " \
                                             "by clicking on that \"Channels\" link up near the top left.")
-#check if this is the main application running (not imported)
+
+# Check if this is the main application running (not imported)
 if __name__ == '__main__':
     ws_url = get_rtm_uri()
 
@@ -93,22 +98,3 @@ if __name__ == '__main__':
         asyncio.get_event_loop().run_until_complete(
             read_loop(ws_url)
         )
-
-# Send a message to #general channel
-# slack.chat.post_message('#general', 'Hello fellow slackers!')
-
-# while True:
-    
-    # Get users list
-    # response = slack.users.list()
-    # users = response.body['members']
-
-    # print(users)
-
-    # for x in users:
-        # print(user_id)
-        # slack.chat.post_message(user_id, 'Hey ' + x['name'] + ', welcome to the Devolio Slack group!')
-        # slack.chat.post_message(user_id, 'We\'d love to hear a little about you - feel free to drop in on #intro and let everyone know what you\'re about.')
-        # slack.chat.post_message(user_id, 'You can add your interests to your profile by [fill this out - I don\'t know what the easiest way to describe this is], and then you can join different channels for your various interests by clicking on that "Channels" link up near the top left [image of Channels link].')
-
-    # time.sleep(500)

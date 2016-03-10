@@ -52,7 +52,7 @@ async def read_loop(uri):
                                             "You can add your interests to your profile by clicking on your name, " \
                                             "and then join channels for your various interests " \
                                             "by clicking on that \"Channels\" link up near the top left."]
-                chat_message(sentences, user_id, 3)
+                chat_message(sentences, user_id, .8)
 
         # If a user changes their preferences
         if data.get('type') == "user_change":

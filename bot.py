@@ -48,11 +48,10 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts)
 
     user_title = user_title.lower()
     user_title = re.split(r"[\,\.\;\&\/\|\s]", user_title)
-    print(user_title)
+
+    print("Finding relevant channels...")
 
     channels_to_suggest = []
-
-    print(shortcuts)
 
     # First check for shortcuts in title
     for channel_name in shortcuts:
@@ -65,8 +64,8 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts)
         if channel_name in user_title:
             channels_to_suggest.append(channel_name)
 
+    print("Suggesting these channels:")
     print(channels_to_suggest)
-
 
     recommended_channels = []
 
@@ -117,10 +116,14 @@ async def read_loop(uri):
         # Wait for the data from slack to come in
         json_data = await ws.recv()
         data = json.loads(json_data)
-        # print(data)
+
+        print("Data received successfully of type " + data.get('type', ''))
+        if data.get('type', '') == '':
+            print(data)
 
         # If a user joins the devolio team
         if data.get('type') == 'team_join':
+            print("User @" + user_name + " has joined, sending welcome message")
             # Get their user id and name
             user_id = data.get('user', {}).get('id')
             user_name = data.get('user', {}).get('name')

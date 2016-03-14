@@ -95,12 +95,36 @@ def scan_relevant_channels(user_id, user_title, shortcuts):
     user_title = user_title.lower()
     print(user_title)
     user_title = re.split(r"[\,\.\;\&\/\|\s]+", user_title)
+
+    channels_to_suggest = []
+
+    for real_channel_name in shortcuts:
+        for shortcut in shortcuts[real_channel_name]:
+            if (shortcut in user_title) or (real_channel_name in user_title):
+                channels_to_suggest.append(real_channel_name)
+
     for channel_name in channel_names:
-        if channel_name in user_title and is_user_in_group(user_id, channel_name) == False:
-            chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], user_id, 0)
-    for title in user_title:
-        if title in shortcuts and is_user_in_group(user_id, shortcuts[title]) == False:
-            chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], user_id, 0)
+        if channel_name in user_title:
+            channels_to_suggest.append(channel_name)
+
+    prompt_channel_join(user_id, channels_to_suggest)
+
+def prompt_channel_join(user_id, channel_names_to_suggest):
+    channel_ids_text = ""
+    channel_ids = []
+
+    for channel_name in channel_names_to_suggest:
+        if not is_user_in_group(user_id, channel_name):
+            channel_ids.append(get_channel_id(channel_name))
+
+    for channel_id in channel_ids:
+        channel_ids_text += "<#" + channel_id + ">, "
+        print("\tadded " + channel_id + " to channel_ids")
+
+    channel_ids_text = channel_ids_text[:-2]
+
+    chat_message(["Hey, I noticed you've mentioned " + channel_ids_text + " in your profile. Why not join?"], user_id, 0)
+
 def is_user_in_group(user_id, group_name):
     user_groups = slack.channels.list().body['channels']
     user_list = []

@@ -76,7 +76,7 @@ async def read_loop(uri):
 
 def chat_message(sentences, location_id, delay_time):
     for sentence in sentences:
-        slack.chat.post_message(location_id, sentence)
+        slack.chat.post_message(location_id, sentence, '', 'true' )
         time.sleep(delay_time)
 
 def get_rtm_uri():

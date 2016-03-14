@@ -12,7 +12,8 @@ import slacker
 ################################
 # IMPORTANT: just for testing! #
 ################################
-slack = slacker.Slacker('xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h')
+TOKEN = 'xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h'
+slack = slacker.Slacker(TOKEN)
 # Use this for production:
 #
 #     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
@@ -30,13 +31,19 @@ def open_im_channel(user):
     return response.body.get('channel', {}).get('id')
 
 
-def chat_message(sentences, location_id, delay_time):
+async def chat_message(sentences, location_id, delay_time, ws):
+    body = {
+        'type': 'message',
+        'token': TOKEN,
+        'channel': location_id
+    }
     for sentence in sentences:
-        slack.chat.post_message(location_id, sentence)
+        body['text'] = sentence
+        await ws.send(json.dumps(body))
         time.sleep(delay_time)
 
 
-def scan_relevant_channels(user_id, user_title):
+async def scan_relevant_channels(user_id, user_title, ws):
     shortcuts = {
         'web': 'webdev',
         'ror': 'ruby',
@@ -51,10 +58,10 @@ def scan_relevant_channels(user_id, user_title):
 
     for channel_name in channel_names:
         if channel_name in user_title and not is_user_in_group(user_id, channel_name):
-            chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], user_id, 0)
+            await chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], user_id, 0, ws)
     for title in user_title:
         if title in shortcuts and not is_user_in_group(user_id, shortcuts[title]):
-            chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], user_id, 0)
+            await chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], user_id, 0, ws)
 
 
 def is_user_in_group(user_id, group_name):
@@ -104,7 +111,7 @@ async def read_loop(uri):
                              "You can add your interests to your profile by clicking on your name, "
                              "and then join channels for your various interests "
                              "by clicking on that \"Channels\" link up near the top left."]
-                chat_message(sentences, im_channel_id, .8)
+                await chat_message(sentences, im_channel_id, .8, ws)
 
         # If a user changes their preferences
         if data.get('type') == "user_change":
@@ -115,13 +122,13 @@ async def read_loop(uri):
             user_title = data.get('user', {}).get('profile', {}).get('title')
 
             if im_channel_id is not None:
-                scan_relevant_channels(user_id, user_title)
+                await scan_relevant_channels(user_id, user_title, ws)
 
         if data.get('type') == "message":
             user_message = data.get('text')
             channel_id = data.get('channel')
             if user_message == "hi":
-                chat_message(["Beep boop, I'm a Welcome Bot!"], channel_id, 0)
+                await chat_message(["Beep boop, I'm a Welcome Bot!"], channel_id, 0, ws)
 
 
 def get_rtm_uri():

@@ -116,6 +116,11 @@ def get_channel_names():
         return []
     return {group['name']: group['id'] for group in user_groups}
 
+def get_channel_id(channel_name):
+    user_groups = slack.channels.list().body['channels']
+    for group in user_groups:
+        if group['name'] == channel_name:
+            return group['id']
 
 async def read_loop(uri):
     ws = await websockets.connect(uri)
@@ -138,10 +143,9 @@ async def read_loop(uri):
             im_channel_id = open_im_channel(user_id)
             # Send intro message
             if im_channel_id is not None:
-                # TODO: change <#intro> to <#CHANNELID> so it will function as a link
                 sentences = "Hey " + user_name + ", welcome to the Devolio Slack group!\n" \
                             "We'd love to hear a little about you - feel free to drop" \
-                            "in on <#intro> and let everyone know what you're about.\n" \
+                            "in on <#" + get_channel_id('intro') + "> and let everyone know what you're about.\n" \
                             "You can add your interests to your profile by clicking on your name, " \
                             "and then join channels for your various interests " \
                             "by clicking on that \"Channels\" link up near the top left."

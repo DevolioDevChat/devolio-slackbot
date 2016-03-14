@@ -65,6 +65,7 @@ async def read_loop(uri):
             im_channel_id = open_im_channel(user_id)
             user_title = data.get('user').get('profile').get('title')
 
+            # Check to make sure the im channel exists, then find and prompt user for channels to join
             if im_channel_id is not None:
                 scan_relevant_channels(user_id, user_title, shortcuts)
 
@@ -74,6 +75,7 @@ async def read_loop(uri):
             if user_message == "hi":
                 chat_message(["Beep boop, I'm a Welcome Bot!"], channel_id, 0)
 
+# Takes an array of lines and sends them to location_id, delayed by delay_time
 def chat_message(sentences, location_id, delay_time):
     for sentence in sentences:
         slack.chat.post_message(location_id, sentence, '', 'true' )
@@ -92,38 +94,47 @@ def get_rtm_uri():
 
 def scan_relevant_channels(user_id, user_title, shortcuts):
     channel_names = get_channel_names()
-    user_title = user_title.lower()
-    user_title = re.split(r"[\,\.\;\&\/\|\s]+", user_title)
+
+    # Split user title by words
+    user_title = re.split(r"[\,\.\;\&\/\|\s]+", user_title.lower())
 
     channels_to_suggest = []
 
+    # First check for shortcuts in title
     for real_channel_name in shortcuts:
         for shortcut in shortcuts[real_channel_name]:
             if (shortcut in user_title) or (real_channel_name in user_title):
                 channels_to_suggest.append(real_channel_name)
 
+    # Then check for existing channel titles
     for channel_name in channel_names:
         if channel_name in user_title:
             channels_to_suggest.append(channel_name)
 
+    # And finally...
     prompt_channel_join(user_id, channels_to_suggest)
 
 def prompt_channel_join(user_id, channel_names_to_suggest):
     channel_ids_text = ""
     channel_ids = []
 
+    # Add channel ids for each suggested channel that the user isn't already in
     for channel_name in channel_names_to_suggest:
         if not is_user_in_group(user_id, channel_name):
             channel_ids.append(get_channel_id(channel_name))
 
+    # Make a string of links to channels
     for channel_id in channel_ids:
         channel_ids_text += "<#" + channel_id + ">, "
         print("\tadded " + channel_id + " to channel_ids")
 
+    # Remove the last ", " from the string
     channel_ids_text = channel_ids_text[:-2]
 
+    # Actually prompt user to join these channels
     chat_message(["Hey, I noticed you've mentioned " + channel_ids_text + " in your profile. Why not join?"], user_id, 0)
 
+# Check if user is in a group (returns a boolean)
 def is_user_in_group(user_id, group_name):
     user_groups = slack.channels.list().body['channels']
     user_list = []
@@ -133,6 +144,7 @@ def is_user_in_group(user_id, group_name):
             break
     return user_id in user_list
 
+# List all the channel names
 def get_channel_names():
     user_groups = slack.channels.list().body['channels']
     channel_names = []
@@ -140,6 +152,7 @@ def get_channel_names():
         channel_names.append(group['name'])
     return channel_names
 
+# Get a channel id by its name
 def get_channel_id(channel_name):
     user_groups = slack.channels.list().body['channels']
     for group in user_groups:

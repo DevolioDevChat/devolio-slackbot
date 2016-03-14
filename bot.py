@@ -58,7 +58,12 @@ def scan_relevant_channels(user_id, user_title):
 
 
 def is_user_in_group(user_id, group_name):
-    user_groups = slack.channels.list().body['channels']
+    try:
+        user_groups = slack.channels.list().body.get('channels', [])
+    except slacker.Error as e:
+        print(e)
+        return True
+
     user_list = []
     for group in user_groups:
         if group['name'] == group_name:
@@ -67,7 +72,11 @@ def is_user_in_group(user_id, group_name):
 
 
 def get_channel_names():
-    user_groups = slack.channels.list().body.get('channels')
+    try:
+        user_groups = slack.channels.list().body.get('channels')
+    except slacker.Error as e:
+        print(e)
+        return []
 
     return [group['name'] for group in user_groups]
 

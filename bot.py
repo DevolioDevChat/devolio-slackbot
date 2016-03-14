@@ -120,6 +120,12 @@ def get_channel_names():
         channel_names.append(group['name'])
     return channel_names
 
+def get_channel_id(channel_name):
+    user_groups = slack.channels.list().body['channels']
+    for group in user_groups:
+        if group['name'] == channel_name:
+            return group['id']
+
 # Check if this is the main application running (not imported)
 if __name__ == '__main__':
     ws_url = get_rtm_uri()

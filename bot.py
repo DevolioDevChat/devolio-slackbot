@@ -46,7 +46,8 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws):
         'web': 'webdev',
         'ror': 'ruby',
         'c++': 'cplusplus',
-        'css': 'frontend'
+        'css': 'frontend',
+        'py': 'python'
     }
     channel_names = get_channel_names()
 
@@ -54,17 +55,14 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws):
     user_title = re.split(r"[.;&/|\s]", user_title)
     print(user_title)
 
-    for channel_name in channel_names:
-        if channel_name in user_title and not is_user_in_group(user_id, channel_name):
-            await chat_message(
-                "Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?",
-                channel_id, ws
-            )
+    for index, title in enumerate(user_title):
+        if title in shortcuts:
+            user_title[index] = shortcuts[title]
+
     for title in user_title:
-        if title in shortcuts and not is_user_in_group(user_id, shortcuts[title]):
+        if title in channel_names and not is_user_in_group(user_id, title):
             await chat_message(
-                "Hi, I noticed you've put {} in your profile. Why not join #{}?".format(shortcuts[title], shortcuts[title]),
-                channel_id, ws
+                "Hi, I noticed you've put {} in your profile. Why not join #{}?".format(title, title), channel_id, ws
             )
 
 

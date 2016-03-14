@@ -109,9 +109,8 @@ def is_user_in_group(user_id, group_name):
     for group in user_groups:
         if group['name'] == group_name:
             user_list = group['members']
-    if user_id not in user_list:
-        return False
-    return True
+            break
+    return user_id in user_list
 
 def get_channel_names():
     user_groups = slack.channels.list().body['channels']

@@ -93,7 +93,6 @@ def get_rtm_uri():
 def scan_relevant_channels(user_id, user_title, shortcuts):
     channel_names = get_channel_names()
     user_title = user_title.lower()
-    print(user_title)
     user_title = re.split(r"[\,\.\;\&\/\|\s]+", user_title)
 
     channels_to_suggest = []

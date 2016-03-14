@@ -59,11 +59,16 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws):
         if title in shortcuts:
             user_title[index] = shortcuts[title]
 
+    recommended_channels = set()
     for title in user_title:
         if title in channel_names and not is_user_in_group(user_id, title):
-            await chat_message(
-                "Hi, I noticed you've put {} in your profile. Why not join #{}?".format(title, title), channel_id, ws
-            )
+            recommended_channels.add('<#' + channel_names[title] + '>')
+
+    if len(recommended_channels) > 0:
+        await chat_message(
+            "Hi, I noticed you've changed your profile. Why not join {}?".format(recommended_channels),
+            channel_id, ws
+        )
 
 
 def is_user_in_group(user_id, group_name):
@@ -86,8 +91,7 @@ def get_channel_names():
     except slacker.Error as e:
         print(e)
         return []
-
-    return [group['name'] for group in user_groups]
+    return {group['name']: group['id'] for group in user_groups}
 
 
 async def read_loop(uri):

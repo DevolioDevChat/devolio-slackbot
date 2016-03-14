@@ -73,6 +73,13 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts)
         if title in channel_names and not is_user_in_group(user_id, title):
             recommended_channels.append('<#' + channel_names[title] + '>')
 
+    mentioned_channels_text = ""
+
+    for mentioned_channel in channels_to_suggest:
+        mentioned_channels_text += mentioned_channel + ', '
+
+    mentioned_channels_text = mentioned_channels_text[:-2]
+
     recommended_channels_text = ""
 
     for recommended_channel in recommended_channels:
@@ -82,7 +89,7 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts)
 
     if len(recommended_channels_text) > 0:
         await chat_message(
-            "Hi, I noticed you've changed your profile. Why not join " + recommended_channels_text + "?",
+            "Hi, I noticed you've changed your profile and mentioned " + mentioned_channels_text + ". Why not join " + recommended_channels_text + "?",
             channel_id, ws
         )
 

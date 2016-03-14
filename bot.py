@@ -43,7 +43,7 @@ async def chat_message(sentences, location_id, delay_time, ws):
         time.sleep(delay_time)
 
 
-async def scan_relevant_channels(user_id, user_title, ws):
+async def scan_relevant_channels(user_id, user_title, channel_id, ws):
     shortcuts = {
         'web': 'webdev',
         'ror': 'ruby',
@@ -58,10 +58,10 @@ async def scan_relevant_channels(user_id, user_title, ws):
 
     for channel_name in channel_names:
         if channel_name in user_title and not is_user_in_group(user_id, channel_name):
-            await chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], user_id, 0, ws)
+            await chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], channel_id, 0, ws)
     for title in user_title:
         if title in shortcuts and not is_user_in_group(user_id, shortcuts[title]):
-            await chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], user_id, 0, ws)
+            await chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], channel_id, 0, ws)
 
 
 def is_user_in_group(user_id, group_name):
@@ -122,7 +122,7 @@ async def read_loop(uri):
             user_title = data.get('user', {}).get('profile', {}).get('title')
 
             if im_channel_id is not None:
-                await scan_relevant_channels(user_id, user_title, ws)
+                await scan_relevant_channels(user_id, user_title, im_channel_id, ws)
 
         if data.get('type') == "message":
             user_message = data.get('text')

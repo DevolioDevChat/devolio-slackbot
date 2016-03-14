@@ -135,12 +135,12 @@ async def read_loop(uri):
 
         # If a user joins the devolio team
         if data.get('type') == 'team_join':
-            print("User @" + user_name + " has joined, sending welcome message")
             # Get their user id and name
             user_id = data.get('user', {}).get('id')
             user_name = data.get('user', {}).get('name')
             # Open im channel with user
             im_channel_id = open_im_channel(user_id)
+            print("User @" + user_name + " has joined, sending welcome message")
             # Send intro message
             if im_channel_id is not None:
                 sentences = "Hey " + user_name + ", welcome to the Devolio Slack group!\n" \
@@ -153,8 +153,10 @@ async def read_loop(uri):
 
         # If a user changes their preferences
         if data.get('type') == "user_change":
-            # Get their user id
+            # Get their user id and name
             user_id = data.get('user', {}).get('id')
+            user_name = data.get('user', {}).get('name')
+            
             # Make sure im channel is open
             im_channel_id = open_im_channel(user_id)
             user_title = data.get('user', {}).get('profile', {}).get('title')

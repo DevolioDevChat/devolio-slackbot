@@ -8,6 +8,8 @@ import websockets
 
 import slacker
 
+from shortcuts import shortcuts
+
 
 ################################
 # IMPORTANT: just for testing! #

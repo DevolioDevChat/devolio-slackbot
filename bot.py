@@ -160,7 +160,7 @@ async def read_loop(uri):
             user_title = data.get('user', {}).get('profile', {}).get('title')
 
             # Check to make sure the im channel exists, then find and prompt user for channels to join
-            if im_channel_id is not None:
+            if im_channel_id is not None and user_title is not None:
                 await scan_relevant_channels(user_id, user_title, im_channel_id, ws, shortcuts)
 
         if data.get('type') == "message":

@@ -50,10 +50,10 @@ async def read_loop(uri):
             if im_channel_id is not None:
                 sentences = ["Hey " + user_name + ", welcome to the Devolio Slack group!",
                 "We'd love to hear a little about you - feel free to drop" \
-                                            "in on <#intro> and let everyone know what you're about.",
-                                            "You can add your interests to your profile by clicking on your name, " \
-                                            "and then join channels for your various interests " \
-                                            "by clicking on that \"Channels\" link up near the top left."]
+                "in on <#intro> and let everyone know what you're about.",
+                "You can add your interests to your profile by clicking on your name, " \
+                "and then join channels for your various interests " \
+                "by clicking on that \"Channels\" link up near the top left."]
                 chat_message(sentences, user_id, .8)
 
         # If a user changes their preferences

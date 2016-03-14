@@ -66,7 +66,7 @@ async def read_loop(uri):
             user_title = data.get('user').get('profile').get('title')
 
             if im_channel_id is not None:
-                scan_relevant_channels(user_id, user_title)
+                scan_relevant_channels(user_id, user_title, shortcuts)
 
         if data.get('type') == "message":
             user_message = data.get('text')
@@ -90,9 +90,7 @@ def get_rtm_uri():
         return None
     return body.get('url')
 
-def scan_relevant_channels(user_id, user_title):
-    shortcuts = {'web' : 'webdev', 'ror' : 'ruby', 'c++' : 'cplusplus',
-    'css' : 'frontend'}
+def scan_relevant_channels(user_id, user_title, shortcuts):
     channel_names = get_channel_names()
     user_title = user_title.lower()
     print(user_title)

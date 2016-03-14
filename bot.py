@@ -37,17 +37,23 @@ def chat_message(sentences, location_id, delay_time):
 
 
 def scan_relevant_channels(user_id, user_title):
-    shortcuts = {'web' : 'webdev', 'ror' : 'ruby', 'c++' : 'cplusplus',
-    'css' : 'frontend'}
+    shortcuts = {
+        'web': 'webdev',
+        'ror': 'ruby',
+        'c++': 'cplusplus',
+        'css': 'frontend'
+    }
     channel_names = get_channel_names()
+
     user_title = user_title.lower()
     user_title = re.split(r"[.;&/|\s]", user_title)
     print(user_title)
+
     for channel_name in channel_names:
-        if channel_name in user_title and is_user_in_group(user_id, channel_name) == False:
+        if channel_name in user_title and not is_user_in_group(user_id, channel_name):
             chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], user_id, 0)
     for title in user_title:
-        if title in shortcuts and is_user_in_group(user_id, shortcuts[title]) == False:
+        if title in shortcuts and not is_user_in_group(user_id, shortcuts[title]):
             chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], user_id, 0)
 
 
@@ -57,17 +63,13 @@ def is_user_in_group(user_id, group_name):
     for group in user_groups:
         if group['name'] == group_name:
             user_list = group['members']
-    if user_id not in user_list:
-        return False
-    return True
+    return user_id in user_list
 
 
 def get_channel_names():
-    user_groups = slack.channels.list().body['channels']
-    channel_names = []
-    for group in user_groups:
-        channel_names.append(group['name'])
-    return channel_names
+    user_groups = slack.channels.list().body.get('channels')
+
+    return [group['name'] for group in user_groups]
 
 
 async def read_loop(uri):

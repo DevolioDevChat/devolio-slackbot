@@ -31,16 +31,14 @@ def open_im_channel(user):
     return response.body.get('channel', {}).get('id')
 
 
-async def chat_message(sentences, location_id, delay_time, ws):
+async def chat_message(sentence, location_id, ws):
     body = {
         'type': 'message',
         'token': TOKEN,
-        'channel': location_id
+        'channel': location_id,
+        'text': sentence
     }
-    for sentence in sentences:
-        body['text'] = sentence
-        await ws.send(json.dumps(body))
-        time.sleep(delay_time)
+    await ws.send(json.dumps(body))
 
 
 async def scan_relevant_channels(user_id, user_title, channel_id, ws):
@@ -58,10 +56,16 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws):
 
     for channel_name in channel_names:
         if channel_name in user_title and not is_user_in_group(user_id, channel_name):
-            await chat_message(["Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?"], channel_id, 0, ws)
+            await chat_message(
+                "Hi, I noticed you've put " + channel_name + " in your profile. Why not join #" + channel_name + "?",
+                channel_id, ws
+            )
     for title in user_title:
         if title in shortcuts and not is_user_in_group(user_id, shortcuts[title]):
-            await chat_message(["Hi, I noticed you've put " + shortcuts[title] + " in your profile. Why not join #" + shortcuts[title] + "?"], channel_id, 0, ws)
+            await chat_message(
+                "Hi, I noticed you've put {} in your profile. Why not join #{}?".format(shortcuts[title], shortcuts[title]),
+                channel_id, ws
+            )
 
 
 def is_user_in_group(user_id, group_name):
@@ -105,13 +109,14 @@ async def read_loop(uri):
             im_channel_id = open_im_channel(user_id)
             # Send intro message
             if im_channel_id is not None:
-                sentences = ["Hey " + user_name + ", welcome to the Devolio Slack group!",
-                             "We'd love to hear a little about you - feel free to drop"
-                             "in on <#intro> and let everyone know what you're about.",
-                             "You can add your interests to your profile by clicking on your name, "
-                             "and then join channels for your various interests "
-                             "by clicking on that \"Channels\" link up near the top left."]
-                await chat_message(sentences, im_channel_id, .8, ws)
+                # TODO: change <#intro> to <#CHANNELID> so it will function as a link
+                sentences = "Hey " + user_name + ", welcome to the Devolio Slack group!\n" \
+                            "We'd love to hear a little about you - feel free to drop" \
+                            "in on <#intro> and let everyone know what you're about.\n" \
+                            "You can add your interests to your profile by clicking on your name, " \
+                            "and then join channels for your various interests " \
+                            "by clicking on that \"Channels\" link up near the top left."
+                await chat_message(sentences, im_channel_id, ws)
 
         # If a user changes their preferences
         if data.get('type') == "user_change":
@@ -128,7 +133,7 @@ async def read_loop(uri):
             user_message = data.get('text')
             channel_id = data.get('channel')
             if user_message == "hi":
-                await chat_message(["Beep boop, I'm a Welcome Bot!"], channel_id, 0, ws)
+                await chat_message("Beep boop, I'm a Welcome Bot!", channel_id, ws)
 
 
 def get_rtm_uri():

@@ -151,9 +151,11 @@ async def read_loop(uri):
             im_channel_id = open_im_channel(user_id)
             print("User @" + user_name + " has joined, sending welcome message")
             # Send intro message
-            if im_channel_id is not None and get_channel_id('intro') is not None:
-                sentences = "Hey @" + user_name + ", welcome to the Devolio Slack group!🙌\n" \
-                            "We'd love to hear a little about you - feel free to drop " \
+            if im_channel_id is not None:
+                sentences = "Hey " + user_name + ", welcome to the Devolio Slack group!\n" \
+                            "Please write your skills in your Slack profile (aka What I Do)," \
+                            "So we can match you with other members and channels.\n" \
+                            "Also, we'd love to hear a little about you - feel free to drop" \
                             "in on <#" + get_channel_id('intro') + "> and let everyone know what you're about.\n" \
                             "You can add your interests to your profile by clicking on your name, " \
                             "and then join channels for your various interests " \

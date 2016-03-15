@@ -9,5 +9,6 @@ shortcuts = {
   'c-sharp': ['c#'],
   'go': ['golang'],
   'linux': ['ubuntu', 'deb', 'debian', 'arch', 'gnu', 'opensuse'],
-  'sound': ['csound', 'max', 'supercollider', 'pd', 'max/msp', 'm4l']
+  'sound': ['csound', 'max', 'supercollider', 'pd', 'max/msp', 'm4l'],
+  'python': ['py', 'pygame']
 }

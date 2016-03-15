@@ -135,7 +135,7 @@ def get_channel_id(channel_name):
             return group['id']
 
 async def read_loop(uri):
-    ws = await websockets.connect(uri)
+    ws = await websockets.connect(uri, http_proxy_port=3128)
     while True:
         # Wait for the data from Slack to come in
         json_data = await ws.recv()

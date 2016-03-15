@@ -1,3 +1,4 @@
+# Import dependencies
 import os
 import time
 import re
@@ -8,6 +9,7 @@ import websockets
 
 import slacker
 
+# Import shortcuts dictionary
 from shortcuts import shortcuts
 
 
@@ -24,8 +26,10 @@ slack = slacker.Slacker(TOKEN)
 
 def open_im_channel(user):
     try:
+        # Try to open an im channel
         response = slack.im.open(user)
     except slacker.Error as e:
+        # If that fails print the error and continue
         print(e)
         return None
 
@@ -34,18 +38,22 @@ def open_im_channel(user):
 
 
 async def chat_message(sentence, location_id, ws):
+    # Prepare message to send
     body = {
         'type': 'message',
         'token': TOKEN,
         'channel': location_id,
         'text': sentence
     }
+    # JSON encode it and send it
     await ws.send(json.dumps(body))
 
 
 async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts):
+    # Get the names of all the channels in the Slack group
     channel_names = get_channel_names()
 
+    # Split what the user has entered as their "job title" into separate words
     user_title = user_title.lower()
     user_title = re.split(r"[\,\.\;\&\/\|\s]", user_title)
 
@@ -67,35 +75,37 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts)
     print("Suggesting these channels:")
     print(channels_to_suggest)
 
+    # Make all the channels into Slack links to the channels...
     recommended_channels = []
-
     for title in channels_to_suggest:
+        # ... as long as they're not already in the channel
         if title in channel_names and not is_user_in_group(user_id, title):
             recommended_channels.append('<#' + channel_names[title] + '>')
 
+    # Make a human-readable list of mentioned channels
     mentioned_channels_text = ""
-
     for mentioned_channel in channels_to_suggest:
         mentioned_channels_text += mentioned_channel + ', '
-
+    # Trim the last ", "
     mentioned_channels_text = mentioned_channels_text[:-2]
 
+    # Same as above for the channel links
     recommended_channels_text = ""
-
     for recommended_channel in recommended_channels:
         recommended_channels_text += recommended_channel + ', '
-
     recommended_channels_text = recommended_channels_text[:-2]
 
+    # Send message to user suggesting channels to join
     if len(recommended_channels_text) > 0:
         await chat_message(
             "Hi, I noticed you've changed your profile and mentioned " + mentioned_channels_text + ". Why not join " + recommended_channels_text + "?",
             channel_id, ws
         )
 
-
+# Check to see if a user is in a channel
 def is_user_in_group(user_id, group_name):
     try:
+        # Get list of channels
         user_groups = slack.channels.list().body.get('channels', [])
     except slacker.Error as e:
         print(e)
@@ -105,9 +115,10 @@ def is_user_in_group(user_id, group_name):
     for group in user_groups:
         if group['name'] == group_name:
             user_list = group['members']
+    # This returns true if the user_id is in user_list, otherwise false
     return user_id in user_list
 
-
+# Get all the channel names from Slack
 def get_channel_names():
     try:
         user_groups = slack.channels.list().body.get('channels')
@@ -116,6 +127,7 @@ def get_channel_names():
         return []
     return {group['name']: group['id'] for group in user_groups}
 
+# Get a channel id by name
 def get_channel_id(channel_name):
     user_groups = slack.channels.list().body['channels']
     for group in user_groups:
@@ -125,10 +137,12 @@ def get_channel_id(channel_name):
 async def read_loop(uri):
     ws = await websockets.connect(uri)
     while True:
-        # Wait for the data from slack to come in
+        # Wait for the data from Slack to come in
         json_data = await ws.recv()
+        # Decode it from JSON
         data = json.loads(json_data)
 
+        # Print a confirmation, and print the actual data if it's of an unknown kind
         print("Data received successfully of type " + data.get('type', ''))
         if data.get('type', '') == '':
             print(data)
@@ -165,6 +179,7 @@ async def read_loop(uri):
             if im_channel_id is not None and user_title is not None:
                 await scan_relevant_channels(user_id, user_title, im_channel_id, ws, shortcuts)
 
+        # If a user sends "hi" to Welcome Bot then respond
         if data.get('type') == "message":
             user_message = data.get('text')
             channel_id = data.get('channel')

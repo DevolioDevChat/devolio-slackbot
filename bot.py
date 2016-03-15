@@ -13,15 +13,10 @@ import slacker
 from shortcuts import shortcuts
 
 
-################################
-# IMPORTANT: just for testing! #
-################################
-TOKEN = 'xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h'
-slack = slacker.Slacker(TOKEN)
-# Use this for production:
-#
-#     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
-#
+# always use this
+
+slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
+
 
 
 def open_im_channel(user):

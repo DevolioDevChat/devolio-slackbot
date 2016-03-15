@@ -183,8 +183,8 @@ async def read_loop(uri):
         if data.get('type') == "message":
             user_message = data.get('text')
             channel_id = data.get('channel')
-            if user_message == "hi":
-                await chat_message("Beep boop, I'm a Welcome Bot!", channel_id, ws)
+            if user_message:
+                await chat_message(user_message + ", lol", channel_id, ws)
 
 def get_rtm_uri():
     rtm = slack.rtm.start()

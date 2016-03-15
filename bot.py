@@ -55,7 +55,7 @@ async def scan_relevant_channels(user_id, user_title, channel_id, ws, shortcuts)
 
     # Split what the user has entered as their "job title" into separate words
     user_title = user_title.lower()
-    user_title = re.split(r"[\,\.\;\&\/\|\s]", user_title)
+    user_title = re.split(r"[\,\.\;\&\/\|\s]+", user_title)
 
     print("Finding relevant channels...")
 

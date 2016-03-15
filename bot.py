@@ -14,8 +14,8 @@ from shortcuts import shortcuts
 
 
 # always use this
-
-slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
+TOKEN = os.environ["SLACKAPIKEY"]
+slack = slacker.Slacker(TOKEN)
 
 
 

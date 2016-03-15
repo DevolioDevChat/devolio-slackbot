@@ -135,7 +135,7 @@ def get_channel_id(channel_name):
             return group['id']
 
 async def read_loop(uri):
-    ws = await websockets.connect(uri, http_proxy_port=3128)
+    ws = await websockets.connect(uri)
     while True:
         # Wait for the data from Slack to come in
         json_data = await ws.recv()
@@ -183,7 +183,7 @@ async def read_loop(uri):
         if data.get('type') == "message":
             user_message = data.get('text')
             channel_id = data.get('channel')
-            if user_message:
+            if user_message !='':
                 await chat_message(user_message + ", lol", channel_id, ws)
 
 def get_rtm_uri():

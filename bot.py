@@ -13,15 +13,10 @@ import slacker
 from shortcuts import shortcuts
 
 
-################################
-# IMPORTANT: just for testing! #
-################################
-TOKEN = 'xoxb-24649221783-q40uS6HJkH7D6TMhykeyaH7h'
+# always use this
+TOKEN = os.environ["SLACKAPIKEY"]
 slack = slacker.Slacker(TOKEN)
-# Use this for production:
-#
-#     slack = slacker.Slacker(os.environ["SLACKAPIKEY"])
-#
+
 
 
 def open_im_channel(user):
@@ -156,9 +151,11 @@ async def read_loop(uri):
             im_channel_id = open_im_channel(user_id)
             print("User @" + user_name + " has joined, sending welcome message")
             # Send intro message
-            if im_channel_id is not None and get_channel_id('intro') is not None:
-                sentences = "Hey @" + user_name + ", welcome to the Devolio Slack group!🙌\n" \
-                            "We'd love to hear a little about you - feel free to drop " \
+            if im_channel_id is not None:
+                sentences = "Hey " + user_name + ", welcome to the Devolio Slack group!\n" \
+                            "Please write your skills in your Slack profile (aka What I Do)," \
+                            "So we can match you with other members and channels.\n" \
+                            "Also, we'd love to hear a little about you - feel free to drop" \
                             "in on <#" + get_channel_id('intro') + "> and let everyone know what you're about.\n" \
                             "You can add your interests to your profile by clicking on your name, " \
                             "and then join channels for your various interests " \
@@ -183,8 +180,8 @@ async def read_loop(uri):
         if data.get('type') == "message":
             user_message = data.get('text')
             channel_id = data.get('channel')
-            if user_message == "hi":
-                await chat_message("Beep boop, I'm a Welcome Bot!", channel_id, ws)
+            if user_message !='':
+                await chat_message(user_message + ", lol", channel_id, ws)
 
 def get_rtm_uri():
     rtm = slack.rtm.start()

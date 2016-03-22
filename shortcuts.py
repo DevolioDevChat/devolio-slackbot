@@ -7,7 +7,7 @@ shortcuts = {
   'javascript': ['js', 'jscript', 'ecmascript', 'es5', 'es6'],
   'assembly': ['masm', 'nasm', 'tasm', 'asm'],
   'c-sharp': ['c#'],
-  'geospatial': ['gis']
+  'geospatial': ['gis'],
   'go': ['golang'],
   'linux': ['ubuntu', 'deb', 'debian', 'arch', 'gnu', 'opensuse', '*nix', 'unix'],
   'sound': ['csound', 'max', 'supercollider', 'pd', 'max/msp', 'm4l'],

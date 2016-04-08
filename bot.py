@@ -159,7 +159,10 @@ async def read_loop(uri):
                             "in on <#" + get_channel_id('intro') + "> and let everyone know what you're about.\n" \
                             "You can add your interests to your profile by clicking on your name, " \
                             "and then join channels for your various interests " \
-                            "by clicking on that \"Channels\" link up near the top left."
+                            "by clicking on that \"Channels\" link up near the top left." \
+                            "\n\n" \
+                            "A quick note about <#" + get_channel_id('_updates') + ">: please don't leave messages" \
+                            "there, that's where the admins post updates. Thanks!"
                 await chat_message(sentences, im_channel_id, ws)
 
         # If a user changes their preferences
